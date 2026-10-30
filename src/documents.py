@@ -158,7 +158,7 @@ def solution_overview(report):
     story += [paragraph("Assumptions and production needs", heading), paragraph(
         "No default date, observation timestamp or prediction horizon is supplied. Bureau records may postdate loans; 3,875 collections events predate origination and are excluded from valid recovery totals. Original exposure is not loss/EAD. "
         "IT/data teams must provide dated snapshots and matured outcomes, agreed feature windows, secure secrets, durable review storage, access controls and independent validation. "
-        "Monitor daily data quality, weekly score/feature drift and analyst outcomes, then AUC/KS/Gini and calibration on matured cohorts. API live-key, public hosting and video remain handover steps.", SMALL)]
+        "Monitor daily data quality, weekly score/feature drift and analyst outcomes, then AUC/KS/Gini and calibration on matured cohorts. Public dashboard deployed and API key configured; demo video remains the final handover step.", SMALL)]
     def page_end(c, _):
         footer(c, width, f"Source: supplied five CSVs; artifacts/report.json. Data version {report['data_version']}.")
     doc.build(story, onFirstPage=page_end, onLaterPages=page_end)
