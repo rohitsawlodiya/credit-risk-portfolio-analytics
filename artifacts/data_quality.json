@@ -1,0 +1,87 @@
+{
+  "tables": {
+    "customers": {
+      "rows": 10000,
+      "columns": 15,
+      "missing": {
+        "years_employed": 500,
+        "num_dependents": 500,
+        "years_at_residence": 500
+      },
+      "duplicate_keys": 0,
+      "sha256": "a194e65ccc40979c55675a7b41d0d4c4f7cd27299771718c1e7db69be29259a6"
+    },
+    "loan_accounts": {
+      "rows": 14685,
+      "columns": 11,
+      "missing": {
+        "interest_rate_pct": 294
+      },
+      "duplicate_keys": 0,
+      "sha256": "6cbe24fadd1545b03e319208a4f2cdaea1e2623c72e7c3ac1cebfdd77a03792a"
+    },
+    "bureau_credit": {
+      "rows": 22979,
+      "columns": 10,
+      "missing": {
+        "days_past_due": 689,
+        "date_closed": 11243
+      },
+      "duplicate_keys": 0,
+      "sha256": "a5ffa76b67bfbd4452e19cfef16503e128ab1bccf7617a5d4ed77a055c7e1603"
+    },
+    "repayment_history": {
+      "rows": 176220,
+      "columns": 7,
+      "missing": {},
+      "duplicate_keys": 0,
+      "sha256": "1a7161b868e7fc9e9f7f449cf4e1d4ea45cf2b21a4df997963a5d1165f1e5129"
+    },
+    "collections_events": {
+      "rows": 8635,
+      "columns": 6,
+      "missing": {},
+      "duplicate_keys": 0,
+      "sha256": "76442b5e09d6b03becde563409e17c6431e5359d6ffb09e819061df594615ae5"
+    }
+  },
+  "decisions": [
+    "Preserve all raw files byte-for-byte; strip categorical whitespace and parse dates strictly in working copies.",
+    "Reject null/duplicate primary keys, orphan foreign keys, invalid target, impossible negative financial values; no silent row dropping.",
+    "Normalize M/F gender labels to Male/Female. Gender, age, marital status, dependents and region are excluded from model features; kept for profiling.",
+    "Tenure longer than age plus one year is treated as unknown for years_employed/years_at_residence. Keep original values in *_raw and explicit *_invalid flags; a one-year margin accommodates integer-age rounding. Do not invent corrected ages or tenure values.",
+    "Retain missing source numeric values and explicit missing flags. Fit median imputation and missing indicators on model training customers only.",
+    "Bureau DPD missing is unknown, not zero. No bureau record means zero observed lines/balances, not verified debt-free; retain no-history flag.",
+    "Null date_closed is expected for active bureau records; do not impute. Preserve unusual balances and dates for audit.",
+    "Aggregate bureau to customer and repayment/collections to account before left-joining to loans; validate cardinality at every join.",
+    "Sum installments over months, but use only the final observed balance. Do not sum monthly balances or replicate bureau debt across customers in portfolio totals.",
+    "Exclude collections before origination from valid activity/recovery totals, retain raw totals and exception counts. All collections fields are excluded from the default model.",
+    "Bureau is undated current-state data. Later-opened lines and current write-offs cannot be treated as origination predictors. Use snapshot monitoring only.",
+    "Repayment months are relative to origination, not a common calendar timeline. Origination-year charts are vintages, not observed default trends.",
+    "Original loan amount is original exposure. Latest observed repayment balance is a separate snapshot proxy, not common-date regulatory EAD.",
+    "No default event date, performance horizon or observation date is supplied. Model evaluation is retrospective and cannot establish prospective default prediction."
+  ],
+  "warnings": {
+    "gender_labels_normalized": 600,
+    "years_employed_exceeds_age_plus_one": 45,
+    "years_at_residence_exceeds_age_plus_one": 4,
+    "collections_before_origination": 3875,
+    "accounts_with_later_bureau_lines": 10755,
+    "customer_since_after_origination": 7293,
+    "bureau_closure_before_open": 0,
+    "closed_bureau_with_positive_balance": 0,
+    "bureau_utilisation_above_one": 0,
+    "customers_without_bureau": 1008,
+    "accounts_without_repayment": 0
+  },
+  "checks": {
+    "loan_grain_preserved": true,
+    "foreign_keys_valid": true,
+    "original_exposure_reconciles": true,
+    "default_count_reconciles": true,
+    "raw_recoveries_reconcile": true,
+    "output_rows": 14685,
+    "output_columns": 68,
+    "customers": 10000
+  }
+}
