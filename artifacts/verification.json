@@ -1,0 +1,41 @@
+{
+  "verified_on": "2026-10-30",
+  "python": "3.12.14",
+  "platform": "macOS Apple Silicon",
+  "tests": {
+    "tests": 33,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1,
+    "passed": 32
+  },
+  "clean_extraction_rebuilt_from_raw": true,
+  "clean_extraction_metrics_match": true,
+  "clean_extraction_source_matches": true,
+  "source_csvs_unchanged": true,
+  "pip_check": "No broken requirements found",
+  "streamlit_health": "ok",
+  "ui_tests": "All five views, empty filter, persisted review and mocked LLM submission/filter invalidation passed",
+  "pdfs": {
+    "architecture.pdf": {
+      "pages": 1,
+      "visually_reviewed": true
+    },
+    "solution_overview.pdf": {
+      "pages": 1,
+      "visually_reviewed": true
+    }
+  },
+  "llm": {
+    "mocked_sdk_transport": "passed",
+    "live_provider": "not run - no API key"
+  },
+  "not_executed": [
+    "Docker build/runtime",
+    "Linux hosting",
+    "GitHub publication",
+    "public deployment",
+    "video recording",
+    "14-day uptime"
+  ]
+}

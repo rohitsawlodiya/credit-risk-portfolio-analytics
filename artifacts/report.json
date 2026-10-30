@@ -1,0 +1,294 @@
+{
+  "data_version": "521688e9b330edba",
+  "built_at_utc": "2026-10-30T12:28:16.719767+00:00",
+  "python": "3.12.10",
+  "portfolio": {
+    "accounts": 14685,
+    "customers": 10000,
+    "defaults": 2364,
+    "default_rate": 0.1609805924412666,
+    "original_exposure": 601119531.64,
+    "latest_observed_balance": 512637943.19,
+    "defaulted_original_exposure": 126919082.86999999,
+    "recovery_valid": 3214536.37
+  },
+  "insights": [
+    {
+      "title": "Income separates observed risk",
+      "finding": "Below $30k: 38.67% (174/450) defaulted; $100k+: 9.52% (295/3,098).",
+      "so_what": "Prioritize affordability checks and early support for lower-income borrowers; income alone is not an approval rule."
+    },
+    {
+      "title": "Employment adds context",
+      "finding": "Unemployed has the highest employment-group default rate: 34.96% (251/718), versus 16.10% overall.",
+      "so_what": "Validate income stability and route vulnerable borrowers to manual review rather than assuming a causal effect."
+    },
+    {
+      "title": "Exposure concentration differs from account volume",
+      "finding": "Mortgage represents 52.31% of original exposure ($314,473,751) and has a 24.65% default rate.",
+      "so_what": "Review concentration limits and collateral valuations. Default counts alone miss the dollar exposure."
+    },
+    {
+      "title": "Income and employment together identify a review segment",
+      "finding": "Unemployed, income <30k: 44.30% (101/228); highest among cross-segments with at least 100 accounts.",
+      "so_what": "Test targeted outreach in this segment and monitor results. This is an exploratory association, not a policy cutoff."
+    },
+    {
+      "title": "Bureau write-offs are a snapshot warning",
+      "finding": "Customers with an observed bureau write-off: 18.72% account default rate (801/4,279); none observed: 15.02% (1,563/10,406).",
+      "so_what": "Request dated bureau snapshots before using this as an underwriting feature. Current write-offs may postdate the target."
+    }
+  ],
+  "model": {
+    "champion": "Gradient boosting",
+    "models": {
+      "Logistic regression": {
+        "validation": {
+          "auc": 0.6792011493770008,
+          "ks": 0.26143033582309005,
+          "gini": 0.35840229875400165,
+          "average_precision": 0.30936459944437056,
+          "brier": 0.13102632306876963,
+          "precision": 0.3094289508632138,
+          "recall": 0.47551020408163264,
+          "threshold": 0.19129329248754173,
+          "confusion_matrix": [
+            [
+              1909,
+              520
+            ],
+            [
+              257,
+              233
+            ]
+          ]
+        },
+        "test": {
+          "auc": 0.6857142123709645,
+          "ks": 0.27648133950329945,
+          "gini": 0.37142842474192905,
+          "average_precision": 0.3243666107505038,
+          "brier": 0.1245668927306853,
+          "precision": 0.29579375848032563,
+          "recall": 0.461864406779661,
+          "threshold": 0.19129329248754173,
+          "confusion_matrix": [
+            [
+              1957,
+              519
+            ],
+            [
+              254,
+              218
+            ]
+          ],
+          "auc_95_ci": [
+            0.6567858848719597,
+            0.7112557273566393
+          ]
+        }
+      },
+      "Gradient boosting": {
+        "validation": {
+          "auc": 0.6829105788054208,
+          "ks": 0.2785332000235253,
+          "gini": 0.36582115761084166,
+          "average_precision": 0.3006349411496035,
+          "brier": 0.13163685505260017,
+          "precision": 0.2531930879038317,
+          "recall": 0.6877551020408164,
+          "threshold": 0.13723705242757406,
+          "confusion_matrix": [
+            [
+              1435,
+              994
+            ],
+            [
+              153,
+              337
+            ]
+          ]
+        },
+        "test": {
+          "auc": 0.6602836381807726,
+          "ks": 0.2291592508419813,
+          "gini": 0.32056727636154525,
+          "average_precision": 0.29007414726332137,
+          "brier": 0.12748332838405932,
+          "precision": 0.2252456538170824,
+          "recall": 0.6313559322033898,
+          "threshold": 0.13723705242757406,
+          "confusion_matrix": [
+            [
+              1451,
+              1025
+            ],
+            [
+              174,
+              298
+            ]
+          ],
+          "auc_95_ci": [
+            0.6292627867195159,
+            0.6834894291813216
+          ]
+        }
+      }
+    },
+    "selection": "Highest validation ROC-AUC; test never used for selection or threshold setting.",
+    "split": {
+      "train": {
+        "accounts": 8818,
+        "customers": 6000,
+        "defaults": 1402
+      },
+      "validation": {
+        "accounts": 2919,
+        "customers": 2000,
+        "defaults": 490
+      },
+      "test": {
+        "accounts": 2948,
+        "customers": 2000,
+        "defaults": 472
+      }
+    },
+    "seed": 42,
+    "features": [
+      "annual_income",
+      "years_employed",
+      "years_at_residence",
+      "loan_amount",
+      "interest_rate_pct",
+      "tenure_months",
+      "collateral_flag",
+      "loan_to_income",
+      "bureau_lines",
+      "bureau_active_lines",
+      "bureau_written_off",
+      "bureau_outstanding",
+      "bureau_utilisation",
+      "bureau_max_dpd",
+      "bureau_dpd_missing_share",
+      "bureau_debt_to_income",
+      "no_bureau_history",
+      "repay_mean_dpd",
+      "repay_max_dpd",
+      "repay_missed_share",
+      "repay_late_share",
+      "repay_paid_ratio",
+      "repay_dpd_change",
+      "repay_last3_mean_dpd",
+      "employment_type",
+      "loan_type",
+      "disbursal_channel",
+      "housing_type"
+    ],
+    "no_behavior_ablation": {
+      "auc": 0.6549938733879138,
+      "ks": 0.23831836477642998,
+      "gini": 0.30998774677582763,
+      "average_precision": 0.27776035820253553,
+      "brier": 0.1282794865982354,
+      "precision": 0.7142857142857143,
+      "recall": 0.01059322033898305,
+      "threshold": 0.5,
+      "confusion_matrix": [
+        [
+          2474,
+          2
+        ],
+        [
+          467,
+          5
+        ]
+      ]
+    },
+    "ablation_note": "Logistic regression without repayment/bureau features; customer profile timestamps are still unknown.",
+    "score_threshold": 0.13723705242757406,
+    "risk_band_thresholds": [
+      0.1,
+      0.25
+    ],
+    "calibration": [
+      {
+        "accounts": 295,
+        "mean_score": 0.05702380188665431,
+        "actual_rate": 0.07457627118644068
+      },
+      {
+        "accounts": 295,
+        "mean_score": 0.07669394830941352,
+        "actual_rate": 0.07796610169491526
+      },
+      {
+        "accounts": 295,
+        "mean_score": 0.09159205443900002,
+        "actual_rate": 0.09830508474576272
+      },
+      {
+        "accounts": 294,
+        "mean_score": 0.1053471578854897,
+        "actual_rate": 0.08503401360544217
+      },
+      {
+        "accounts": 295,
+        "mean_score": 0.11982355131737414,
+        "actual_rate": 0.16610169491525423
+      },
+      {
+        "accounts": 295,
+        "mean_score": 0.13719735914413117,
+        "actual_rate": 0.17627118644067796
+      },
+      {
+        "accounts": 294,
+        "mean_score": 0.16099187446224975,
+        "actual_rate": 0.17006802721088435
+      },
+      {
+        "accounts": 295,
+        "mean_score": 0.19018858330125246,
+        "actual_rate": 0.16271186440677965
+      },
+      {
+        "accounts": 295,
+        "mean_score": 0.24318024640263095,
+        "actual_rate": 0.2440677966101695
+      },
+      {
+        "accounts": 295,
+        "mean_score": 0.3892687751301152,
+        "actual_rate": 0.34576271186440677
+      }
+    ],
+    "limitations": [
+      "Retrospective target classification, not validated forward-looking PD.",
+      "Bureau reporting dates, default dates and target performance windows are absent.",
+      "Customer holdout prevents shared-borrower leakage but cannot repair temporal leakage.",
+      "Excluded all collections, target, IDs, age, gender, marital status, dependents, region and calendar dates.",
+      "Bands are illustrative; threshold maximizes validation KS, not expected profit. No automatic decisions.",
+      "Scores on training accounts are fitted values; use only the labelled test partition for reported metrics.",
+      "AUC intervals are 250 customer-cluster bootstrap draws with a fixed model; they do not capture model-training uncertainty."
+    ]
+  },
+  "anomalies": {
+    "method": "Isolation Forest on robust loan-type/income-band peer residuals plus history and over-limit rules",
+    "features": [
+      "repay_dpd_change",
+      "repay_missed_share",
+      "repay_paid_ratio",
+      "bureau_utilisation",
+      "bureau_max_dpd",
+      "bureau_debt_to_income"
+    ],
+    "contamination": 0.03,
+    "cutoff": 0.5964662031869462,
+    "flagged": 588,
+    "isolation_flagged": 441,
+    "history_flagged": 221,
+    "over_limit_flagged": 0,
+    "peer_minimum_nonmissing": 30,
+    "note": "3% is a review-capacity assumption, not an observed anomaly prevalence. The full snapshot fits the detector without target labels. No anomaly ground truth is supplied."
+  }
+}
